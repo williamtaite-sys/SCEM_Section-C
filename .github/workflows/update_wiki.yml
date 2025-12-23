@@ -3,7 +3,7 @@ name: Update Wiki Documentation
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - "**.ipynb"
       - "scripts/generate_ai_wiki.py"
