@@ -42,7 +42,7 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           
-          # Clone the Wiki (it lives at .wiki.git)
+          # Clone Wiki (it lives at .wiki.git)
           # We use the GITHUB_TOKEN for auth
           git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git" wiki_repo
           
