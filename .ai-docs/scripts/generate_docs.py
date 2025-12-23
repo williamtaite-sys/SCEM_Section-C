@@ -104,7 +104,7 @@ def main():
                 if doc_content:
                     # Create a flat filename for wiki: "folder_subfolder_filename.md"
                     # or keep hierarchy? Wikis are usually flat. Let's do flat with underscores.
-                    safe_name = file_path.replace("\", "_").replace("/", "_").replace(".", "_") + ".md"
+                    safe_name = file_path.replace("\\", "_").replace("/", "_").replace(".", "_") + ".md"
                     output_path = os.path.join(output_dir, safe_name)
                     
                     with open(output_path, "w", encoding="utf-8") as f:
