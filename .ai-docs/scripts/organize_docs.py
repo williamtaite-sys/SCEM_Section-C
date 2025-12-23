@@ -7,7 +7,7 @@ CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../config.yaml")
 
 def load_config():
     if not os.path.exists(CONFIG_PATH):
-        return {{}}
+        return {}
     with open(CONFIG_PATH, "r") as f:
         return yaml.safe_load(f)
 
@@ -47,7 +47,7 @@ def main():
     md_files = glob.glob(os.path.join(wiki_dir, "*.md"))
     
     # Structure: {Category: [(Title, Filename)]}
-    structure = {{}}
+    structure = {}
     
     for md_file in md_files:
         filename = os.path.basename(md_file)
