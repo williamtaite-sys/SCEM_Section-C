@@ -2,7 +2,7 @@
 
 This guide explains how to add automated, AI-driven documentation generation to any GitHub repository. The system uses Google's Gemini models to analyze your code and notebooks, generating a structured GitHub Wiki that updates automatically on every push.
 
-## 📦 What is in the Kit?
+## 📦 What's in the Kit?
 
 The kit consists of two main components:
 1.  **`.ai-docs/`**: A self-contained directory holding the configuration, templates, and scripts.

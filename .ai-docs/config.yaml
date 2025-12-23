@@ -3,7 +3,7 @@
 # Global settings
 project_name: "SCEM Section C"
 wiki_dir: "wiki_content" # Output directory for generated docs
-model: "gemini-2.0-flash-exp" # Or gemini-1.5-pro, etc.
+model: "gemini-2.5-flash" # Or gemini-1.5-pro, etc.
 
 # Files to completely ignore during scanning
 ignore_patterns:
