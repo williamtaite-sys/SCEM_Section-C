@@ -40,7 +40,11 @@ jobs:
           python .ai-docs/scripts/organize_docs.py
 
       - name: Upload to Wiki
-        uses: SwiftDoc/github-wiki-publish-action@v1
-        with:
-          wiki_folder: wiki_content
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd wiki_content
+          git init
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git add .
+          git commit -m "Update Wiki content" || echo "No changes to commit"
+          git push --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git" master:master
