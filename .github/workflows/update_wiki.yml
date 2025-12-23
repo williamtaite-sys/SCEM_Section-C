@@ -1,0 +1,62 @@
+name: Update Wiki Documentation
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "**.ipynb"
+      - "scripts/generate_ai_wiki.py"
+      - "scripts/organize_wiki.py"
+      - ".github/workflows/update_wiki.yml"
+
+jobs:
+  update-wiki:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Generate AI Documentation
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          python scripts/generate_ai_wiki.py
+          python scripts/organize_wiki.py
+
+      - name: Push to Wiki
+        run: |
+          # Configure Git
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          
+          # Clone the Wiki (it lives at .wiki.git)
+          # We use the GITHUB_TOKEN for auth
+          git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git" wiki_repo
+          
+          # Copy generated content into the wiki repo
+          cp -r wiki_content/* wiki_repo/
+          
+          # Commit and Push
+          cd wiki_repo
+          git add .
+          
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update Wiki documentation [skip ci]"
+            git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git"
+          fi
