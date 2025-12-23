@@ -3,6 +3,7 @@
 # Global settings
 project_name: "SCEM Section C"
 wiki_dir: "wiki_content" # Output directory for generated docs
+templates_dir: ".ai-docs/templates" # Directory containing markdown templates
 model: "gemini-2.5-flash" # Or gemini-1.5-pro, etc.
 
 # Files to completely ignore during scanning
@@ -11,6 +12,30 @@ ignore_patterns:
   - "**/.git/**"
   - "**/tests/**"
   - "**/*.min.js"
+
+# Auto-Discovery Rules
+# Used by init_docs_config.py to automatically generate targets for found files.
+auto_discovery:
+  ".sql":
+    template: "sql.md"
+    category: "Database"
+    target_name: "SQL Scripts"
+  ".orch.yaml":
+    template: "matillion_orch.md"
+    category: "Data Pipeline"
+    target_name: "Matillion Orchestration"
+  ".tran.yaml":
+    template: "matillion_tran.md"
+    category: "Data Pipeline"
+    target_name: "Matillion Transformation"
+  ".ipynb":
+    template: "data_science.md"
+    category: "Analysis"
+    target_name: "Jupyter Notebooks"
+  ".py":
+    template: "generic.md"
+    category: "Utilities"
+    target_name: "Python Scripts"
 
 # Documentation Targets
 # Define groups of files and the templates to use for them.

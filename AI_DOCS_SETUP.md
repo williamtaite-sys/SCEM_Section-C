@@ -5,8 +5,8 @@ This guide explains how to add automated, AI-driven documentation generation to 
 ## 📦 What's in the Kit?
 
 The kit consists of two main components:
-1.  **`.ai-docs/`**: A self-contained directory holding the configuration, templates, and scripts.
-2.  **`.github/workflows/update_wiki.yml`**: A GitHub Action that triggers the process.
+1.  **`.ai-docs/`**: A self-contained directory holding the configuration, templates, and scripts (including the `discover_targets.py` script which automatically maps your project files to documentation templates).
+2.  **`.github/workflows/update_wiki.yml`**: A GitHub Action that triggers the discovery and generation process.
 
 ## 🚀 Deployment Instructions
 
@@ -25,6 +25,9 @@ My-Repo/
 │   ├── config.yaml
 │   ├── requirements.txt
 │   ├── scripts/
+│   │   ├── discover_targets.py
+│   │   ├── generate_docs.py
+│   │   └── organize_docs.py
 │   └── templates/
 ├── .github/
 │   └── workflows/
@@ -33,28 +36,27 @@ My-Repo/
 ```
 
 ### 2. Configure `config.yaml`
-Open `.ai-docs/config.yaml` and customize it for your project:
+Open `.ai-docs/config.yaml` and customize it. The system is designed to be "Zero Config" for common file types.
 
-*   **`project_name`**: Set the title of your documentation.
-*   **`targets`**: Define which files to document. You can have multiple groups with different templates.
+*   **Global Settings**:
+    - `project_name`: The title of your documentation.
+    - `templates_dir`: Where your prompts are stored (default: `.ai-docs/templates`).
+*   **Auto-Discovery (Recommended)**:
+    The `auto_discovery` section defines rules. If the system finds these file types in your repo, it will automatically create documentation for them using the specified template.
     ```yaml
-    targets:
-      - name: "Jupyter Notebooks"
-        pattern: "**/*.ipynb"       # Finds all notebooks
-        template: "data_science.md" # Uses the data science prompt
-        category: "Analysis"        # Groups them under "Analysis" in the sidebar
-
-      - name: "ETL Scripts"
-        pattern: "etl/**/*.py"
-        template: "generic.md"
-        category: "Data Pipelines"
+    auto_discovery:
+      ".sql":
+        template: "sql.md"
+        category: "Database"
+        target_name: "SQL Scripts"
     ```
-*   **`ignore_patterns`**: Add any file paths you want to exclude (e.g., `**/tests/**`).
+*   **Manual Targets**:
+    If you need to document a specific folder or file with a unique template, add it to `targets`. Manual targets always take precedence.
 
 ### 3. Customize Prompts (Optional)
-Look in `.ai-docs/templates/`. You will see markdown files like `data_science.md`.
+Look in `.ai-docs/templates/`. You will see markdown files like `data_science.md` or `matillion_orch.md`.
 *   These are the instructions sent to the AI.
-*   You can edit them to change the output style, add specific sections (e.g., "List all SQL tables referenced"), or enforce formatting rules.
+*   You can edit them to change the output style or add specific logic (e.g., "Always list security considerations").
 
 ### 4. Set GitHub Secrets
 The system requires a Google API Key to access the Gemini model.
@@ -75,14 +77,15 @@ The GitHub Action needs permission to write to the Wiki.
 Commit the files and push to your `main` or `master` branch.
 ```bash
 git add .ai-docs .github
-git commit -m "Setup: Add AI Documentation Kit"
+git commit -m "Setup: Add AI Documentation Kit with Auto-Discovery"
 git push origin main
 ```
-The Action will start automatically. You can view progress in the **Actions** tab. Once finished, click the **Wiki** tab to see your new documentation!
+The Action will start automatically. It will **discover** your files, **generate** documentation via AI, and **publish** it to your Wiki!
 
 ---
 
 ## 🔧 Maintenance
 
-*   **Changing the Model**: Edit `config.yaml` to change `model` (e.g., from `gemini-2.0-flash-exp` to `gemini-1.5-pro`).
-*   **Adding New File Types**: Simply add a new entry to the `targets` list in `config.yaml` and optionally create a new template in `templates/`.
+*   **Adding New File Types**: Simply add a new extension and template mapping to the `auto_discovery` section in `config.yaml`.
+*   **Updating Logic**: Edit the markdown files in `templates/` to refine how the AI documents your code.
+*   **Changing the Model**: Update the `model` field in `config.yaml` (e.g., `gemini-2.0-flash`).

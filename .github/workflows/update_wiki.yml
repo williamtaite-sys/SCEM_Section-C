@@ -29,6 +29,10 @@ jobs:
         run: |
           pip install -r .ai-docs/requirements.txt
 
+      - name: Initialize Docs Configuration
+        run: |
+          python .ai-docs/scripts/discover_targets.py
+
       - name: Generate Documentation
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
