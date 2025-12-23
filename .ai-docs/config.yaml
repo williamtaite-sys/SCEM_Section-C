@@ -1,0 +1,26 @@
+# AI Documentation Configuration
+
+# Global settings
+project_name: "SCEM Section C"
+wiki_dir: "wiki_content" # Output directory for generated docs
+model: "gemini-2.0-flash-exp" # Or gemini-1.5-pro, etc.
+
+# Files to completely ignore during scanning
+ignore_patterns:
+  - "**/node_modules/**"
+  - "**/.git/**"
+  - "**/tests/**"
+  - "**/*.min.js"
+
+# Documentation Targets
+# Define groups of files and the templates to use for them.
+targets:
+  - name: "Jupyter Notebooks"
+    pattern: "**/*.ipynb"       # Glob pattern to find files
+    template: "data_science.md" # Template file in .ai-docs/templates/
+    category: "Analysis"        # Category for sidebar/grouping
+
+  - name: "Python Scripts"
+    pattern: "scripts/*.py"
+    template: "generic.md"
+    category: "Utilities"
