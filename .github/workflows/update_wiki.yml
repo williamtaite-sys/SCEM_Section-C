@@ -1,6 +1,7 @@
-name: Update AI Wiki
+name: Snap Auto Docs
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -15,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -46,9 +47,21 @@ jobs:
       - name: Upload to Wiki
         run: |
           cd wiki_content
+
+          # Check if there are any files to commit
+          if [ -z "$(ls -A)" ]; then
+            echo "No documentation files generated. Skipping wiki update."
+            exit 0
+          fi
+
           git init
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git add .
-          git commit -m "Update Wiki content" || echo "No changes to commit"
-          git push --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git" HEAD:master
+
+          # Only push if commit succeeds (there are changes)
+          if git commit -m "Update Wiki content"; then
+            git push --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git" HEAD:master
+          else
+            echo "No changes to commit. Wiki is up to date."
+          fi

@@ -4,17 +4,60 @@
 project_name: "SCEM Section C"
 wiki_dir: "wiki_content" # Output directory for generated docs
 templates_dir: ".ai-docs/templates" # Directory containing markdown templates
-model: "gemini-2.5-flash" # Or gemini-1.5-pro, etc.
+
+# LLM Configuration
+provider: "google" # Options: google, openai, anthropic
+model: "gemini-2.5-flash"
+# Common Models:
+# - Google: gemini-2.5-flash, gemini-1.5-pro
+# - OpenAI: gpt-4o, gpt-3.5-turbo
+# - Anthropic: claude-3-5-sonnet-20240620
 
 # Files to completely ignore during scanning
 ignore_patterns:
+  # Build and dependency directories
   - "**/node_modules/**"
   - "**/.git/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/__pycache__/**"
+  - "**/.venv/**"
+  - "**/venv/**"
+  # Test directories
   - "**/tests/**"
+  - "**/test/**"
+  # Minified files
   - "**/*.min.js"
+  - "**/*.min.css"
+  # Security-sensitive files (CRITICAL)
+  - "**/.env"
+  - "**/.env.*"
+  - "**/**.env"
+  - "**/secrets.*"
+  - "**/secret.*"
+  - "**/*credentials*"
+  - "**/*credential*"
+  - "**/*.pem"
+  - "**/*.key"
+  - "**/*.p12"
+  - "**/*.pfx"
+  - "**/*.jks"
+  - "**/id_rsa*"
+  - "**/id_ed25519*"
+  - "**/*.gpg"
+  - "**/token*"
+  - "**/api_key*"
+  - "**/apikey*"
+  - "**/*password*"
+  - "**/auth.json"
+  - "**/serviceAccount*.json"
+  - "**/.netrc"
+  - "**/.npmrc"
+  - "**/.pypirc"
 
 # Auto-Discovery Rules
-# Used by init_docs_config.py to automatically generate targets for found files.
+# Used by discover_targets.py to automatically generate targets for found files.
+# Add or remove rules here to match your project structure.
 auto_discovery:
   ".sql":
     template: "sql.md"
@@ -38,12 +81,13 @@ auto_discovery:
     target_name: "Python Scripts"
 
 # Documentation Targets
-# Define groups of files and the templates to use for them.
+# You can manually define targets here if Auto-Discovery doesn't cover your needs.
+# Manual targets take precedence over auto-discovered ones.
 targets:
   - name: "Jupyter Notebooks"
-    pattern: "**/*.ipynb"       # Glob pattern to find files
-    template: "data_science.md" # Template file in .ai-docs/templates/
-    category: "Analysis"        # Category for sidebar/grouping
+    pattern: "**/*.ipynb"
+    template: "data_science.md"
+    category: "Analysis"
 
   - name: "Python Scripts"
     pattern: "scripts/*.py"
